@@ -1,62 +1,83 @@
-# 5402282516:AAEOgb5TR9AfLuq1TnmKlZVsT7X8rozLae0
+from aiogram import Bot, types
+from aiogram.utils import executor
+from aiogram.utils.markdown import text
+from aiogram.dispatcher import Dispatcher, FSMContext
+from aiogram.dispatcher.filters.state import State, StatesGroup
 
-import telebot
-from telebot import *
+from config import BOT_TOKEN
+import keys as kb
 
-bot = telebot.TeleBot('5402282516:AAEOgb5TR9AfLuq1TnmKlZVsT7X8rozLae0')
-bot.polling(none_stop=True, interval=0)
+bot = Bot(token=BOT_TOKEN)
+dp = Dispatcher(bot)
 
 
-@bot.message_handler(content_types=['text'])
-def get_text_messages(message):
-    if message.text == "Привет":
-        bot.send_message(message.from_user.id, "Привет, чем я могу тебе помочь?")
-    elif message.text == "/help":
-        bot.send_message(message.from_user.id, "Напиши привет")
+##
+
+class JoinContest(StatesGroup):
+    waiting_for_bet_slip = State()
+
+
+@dp.message_handler(commands=['start'])
+async def process_command_start(message: types.Message):
+    await message.answer('Handurus bot is launched!',
+                         reply_markup=kb.inline_kb_full)
+
+
+help_message = text(
+    'Commands:\n',
+    '/start - launch',
+    '/soon - see upcoming futures',
+    '/leaderboard - top users',
+    '/about - learn about the bot',
+    sep='\n'
+)
+about_message = text(
+    'About in development!'
+)
+join_message = text(
+    'Send the number'
+)
+leader_message = text(
+    ...
+)
+
+
+@dp.message_handler(commands=['help'])
+async def process_help_command(message: types.Message):
+    print('help needed')  # for debugging
+    await message.answer(help_message)
+
+
+@dp.callback_query_handler(text_contains='call')
+async def process_callback_kb1btn1(callback_query: types.CallbackQuery):
+    code = callback_query.data
+
+    if code == 'callHelp':
+        await bot.send_message(callback_query.from_user.id, help_message)
+
+    elif code == 'callAbout':
+        await bot.send_message(callback_query.from_user.id, about_message)
+
+    elif code == 'callJoin':
+        await bot.send_message(callback_query.from_user.id, join_message)
+        await JoinContest.waiting_for_bet_slip.set()
+
+    elif code == 'callLeader':
+        await bot.send_message(callback_query.from_user.id, leader_message)
+
     else:
-        bot.send_message(message.from_user.id, "Я тебя не понимаю. Напиши /help.")
+        ...
 
 
-name = ''
-surname = ''
-age = 0
-
-@bot.message_handler(content_types=['text'])
-def start(message):
-    if message.text == '/reg':
-        bot.send_message(message.from_user.id, "Как тебя зовут?")
-        bot.register_next_step_handler(message, get_name) #следующий шаг – функция get_name
-    else:
-        bot.send_message(message.from_user.id, 'Напиши /reg')
-
-def get_surname(message):
-    global surname
-    surname = message.text
-    bot.send_message('Сколько тебе лет?')
-    bot.register_next_step_handler(message, get_age)
-
-def get_name(message): #получаем фамилию
-    global name
-    name = message.text
-    bot.send_message(message.from_user.id, 'Какая у тебя фамилия?')
-    bot.register_next_step_handler(message, get_surname)
+##
 
 
-
-def get_age(message):
-    global age
-    while age == 0: #проверяем что возраст изменился
-        try:
-             age = int(message.text) #проверяем, что возраст введен корректно
-        except Exception:
-             bot.send_message(message.from_user.id, 'Цифрами, пожалуйста')
-        bot.send_message(message.from_user.id, 'Тебе '+str(age)+' лет, тебя зовут '+name+' '+surname+'?')
+@dp.message_handler(commands=['soon'])
+async def process_command_1(message: types.Message):
+    await message.answer('You will see it here soon',
+                         reply_markup=kb.cancel_mu)
+    # needed cancel button
 
 
-@bot.callback_query_handler(func=lambda call: True)
-def callback_worker(call):
-    if call.data == "yes": #call.data это callback_data, которую мы указали при объявлении кнопки
-        ... #код сохранения данных, или их обработки
-        bot.send_message(call.message.chat.id, 'Запомню : )')
-    elif call.data == "no":
-         ... #переспрашиваем
+if __name__ == '__main__':
+    executor.start_polling(dp)
