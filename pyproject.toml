@@ -1,13 +1,18 @@
 [tool.poetry]
 name = "handurus"
 version = "0.1.0"
-description = ""
+description = "ease doom scrolling"
 authors = ["Nick Frolov <urusai@engineer.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
 aiogram = "^3.4.1"
+# pytest = "^8.1.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.1.1"
+black = "^24.3.0"
 
 [build-system]
 requires = ["poetry-core"]
