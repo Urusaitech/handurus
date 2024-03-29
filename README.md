@@ -24,4 +24,8 @@ upcoming project to simplify news reading
 **ADD-ONS 3RD WAVE**
 - width scaling
 - user behaviour portrait
-- v2 ML source recommendation system (feedback + portrait)
+- v2 ML source recommendation system (feedback + portrait + global search)
+
+**ADD-ONS 4th WAVE**
+- admin desktop tool
+- web interface
