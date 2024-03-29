@@ -4,12 +4,18 @@ upcoming project to simplify news reading
 
 # Functionality Roadmap
 **CORE:**
-- notifications 
-- subscription to notifications
-- external channels scan
-- subscriptions management
-- healthcheck metrics
-- tests 50% coverage
+
+☐ notifications 
+
+☐ subscription to notifications
+
+☐ external channels scan
+
+☐ subscriptions management
+
+☐ healthcheck metrics
+
+☐ tests 50% coverage
 
 **ADD-ONS**
 - notification rates and category management
