@@ -5,7 +5,7 @@ upcoming project to simplify news reading
 # Functionality Roadmap
 **CORE:**
 
-☐ notifications 
+☑ notifications 
 
 ☐ subscription to notifications
 
@@ -26,6 +26,7 @@ upcoming project to simplify news reading
 - user state configuration json import and export
 - admin TG commands
 - admin http api
+- chat group functionality
 
 **ADD-ONS 3RD WAVE**
 - width scaling
