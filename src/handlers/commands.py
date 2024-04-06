@@ -37,7 +37,7 @@ async def answer_settings(message: Message):
 @router.message(F.text.lower() == "faq")
 async def answer_faq(message: Message):
     await message.answer(
-        "to be soon",
+        "In development",
         reply_markup=ReplyKeyboardRemove()
     )
 
