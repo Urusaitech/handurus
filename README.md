@@ -9,7 +9,7 @@ upcoming project to simplify news reading
 
 ☐ subscription to notifications
 
-☐ external channels scan
+☑ external channels scan
 
 ☐ subscriptions management
 
