@@ -1,3 +1,4 @@
+import aiohttp
 from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
@@ -5,8 +6,10 @@ from aiogram.types import Message, ReplyKeyboardRemove
 from aiogram.utils.formatting import Bold, Text
 
 from src.keyboards.main_kbs import get_start_kb, get_settings_kb
+from src.settings.config import config
 
 router = Router()
+parser_host = config.parser_host.get_secret_value()
 
 
 @router.message(Command("start"))
@@ -20,10 +23,29 @@ async def cmd_start(message: Message, state: FSMContext):
 
 @router.message(F.text.lower() == "list subs")
 async def answer_subs(message: Message):
-    await message.answer(
-        "No subscriptions yet",
-        reply_markup=ReplyKeyboardRemove()
-    )
+    async with aiohttp.ClientSession() as session:
+        print('sending request')
+        await message.answer(
+                "Loading..",
+                reply_markup=ReplyKeyboardRemove()
+            )
+        response = await session.get(url=f'{parser_host}/api/v1/channels/{message.from_user.id}',
+                                     headers={"Content-Type": "application/json"})
+        result = await response.json()
+        print(result)
+        if not result['subs']:
+            await message.answer(
+                "No subscriptions yet",
+                reply_markup=ReplyKeyboardRemove()
+            )
+        else:
+            data = "Your subscriptions:\n"
+            for i in result['subs']:
+                data += f"{i.replace("https://t.me/s/", "@")}\n"
+            await message.answer(
+                data,
+                reply_markup=ReplyKeyboardRemove()
+            )
 
 
 @router.message(F.text.lower() == "settings")
@@ -50,5 +72,3 @@ async def cmd_info(message: Message, state: FSMContext):
             "your TG id: ", Bold(message.from_user.id)
         ).as_kwargs()
     )
-
-
