@@ -17,7 +17,7 @@ class Subscribe(StatesGroup):
 @router.message(F.text.lower() == "add subscription")
 async def add_subscription(message: Message, state: FSMContext):
     await message.answer(
-        "send url, example: https://t.me/pythontest_it",
+        "send url, example: https://t.me/telegram",
         reply_markup=ReplyKeyboardRemove()
     )
     await state.set_state(Subscribe.receiving_url)
@@ -27,9 +27,9 @@ async def add_subscription(message: Message, state: FSMContext):
 async def url_correct(message: Message, state: FSMContext):
     await state.update_data(chosen_food=message.text.lower())
     await message.answer(
-        text=f"You subscribed to: {message.text}",
+        text=f"Channel {message.text.replace("https://t.me/", "@")} will appear in your feed soon",
     )
-    await Subscriptions.process_new_subscription(message.text)
+    await Subscriptions().process_new_subscription(message)
     await state.clear()
 
 
