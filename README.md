@@ -27,6 +27,7 @@ upcoming project to simplify news reading
 - admin TG commands
 - admin http api
 - chat group functionality
+- localization
 
 **ADD-ONS 3RD WAVE**
 - width scaling
