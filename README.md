@@ -25,6 +25,7 @@ upcoming project to simplify news reading
 **ADD-ONS 2ND WAVE**
 - user state configuration json import and export
 - admin TG commands
+- sso model
 - admin http api
 - chat group functionality
 - localization
