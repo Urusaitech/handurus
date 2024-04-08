@@ -23,5 +23,6 @@ def get_settings_kb() -> ReplyKeyboardMarkup:
     kb = ReplyKeyboardBuilder()
     kb.button(text="Add subscription")
     kb.button(text="Notifications frequency")
+    kb.button(text="Edit keywords")
     kb.adjust(2)
     return kb.as_markup(resize_keyboard=True)
