@@ -7,7 +7,7 @@ upcoming project to simplify news reading
 
 ☑ notifications 
 
-☐ subscription to notifications
+☑ subscription to notifications
 
 ☑ external channels scan
 
