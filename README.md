@@ -1,5 +1,6 @@
 # handurus - TG bot 
-upcoming project to simplify news reading
+This bot helps you simplify news reading.
+It works in bound with Parser API, meanwhile stored in private repository. 
 
 
 # Functionality Roadmap
