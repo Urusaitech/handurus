@@ -9,7 +9,7 @@ class Subscriptions:
         self.parser_host = config.parser_host.get_secret_value()
 
     async def process_new_subscription(self, message: Message):
-        print('we got url ', message.text)
+        print('sub url ', message.text)
         data = {
             'url': message.text,
             'user': {
@@ -18,9 +18,7 @@ class Subscriptions:
                 'language': message.from_user.language_code,
             }
         }
-
         async with aiohttp.ClientSession() as session:
-            print('sending request')
             response = await session.post(url=f'{self.parser_host}/api/v1/channel',
                                           json=data,
                                           headers={"Content-Type": "application/json"})

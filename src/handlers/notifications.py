@@ -12,28 +12,33 @@ router = Router()
 class Notifications:
     def __init__(self):
         self.parser_host = config.parser_host.get_secret_value()
-        self.updates_timer = 60  # sec
+        self.updates_timer = 120  # sec
         self.updates = None
 
     async def collect_notification_task(self):
         while True:
             async with aiohttp.ClientSession() as session:
-                print('collecting updates')
+                print('collecting updates from parser')
                 try:
                     response = await session.get(url=f'{self.parser_host}/api/v1/updates',
                                                  headers={"Content-Type": "application/json"})
                     self.updates = await response.json()
-                    print(f'updates: {self.updates}')
+                    # print(f'updates: {self.updates}')
                 except client_exceptions.ClientConnectorError as e:
                     print(e)
+                print('collected')
             await asyncio.sleep(self.updates_timer)
 
     async def send_notification(self):
         while True:
             await asyncio.sleep(3)
-            print('sending updates')
+            print('sending collected updates')
             if self.updates:
-                await bot.send_message(528914637, "text")
+                print('updates: ', self.updates)
+                for user, news in self.updates.items():
+                    for text in news:
+                        await bot.send_message(user, text)
+                        await asyncio.sleep(1)
                 self.updates = None
             else:
                 print('updates not found')
