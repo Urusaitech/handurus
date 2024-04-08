@@ -1,6 +1,7 @@
 # handurus - TG bot 
 This bot helps you simplify news reading.
-It works in bound with Parser API, meanwhile stored in private repository. 
+It works in bound with Parser API, currently being developed and stored in a private repository. 
+If you are interested to take part in closed beta, contact me in TG: @urusaitech
 
 
 # Functionality Roadmap
