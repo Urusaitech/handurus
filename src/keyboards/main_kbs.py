@@ -14,6 +14,7 @@ def get_start_kb() -> ReplyKeyboardMarkup:
     kb = ReplyKeyboardBuilder()
     kb.button(text="List subs")
     kb.button(text="Settings")
+    kb.button(text="List keywords")
     kb.button(text="FAQ")
     kb.adjust(2)
     return kb.as_markup(resize_keyboard=True)

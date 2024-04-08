@@ -17,7 +17,7 @@ class Keywords:
                 "keywords": keywords
             }
             print(keywords)
-            response = await session.post(url=f'{self.parser_host}/api/v1/keywords/{message.from_user.id}',
+            response = await session.post(url=f'{self.parser_host}/api/v1/keywords',
                                           json=keywords,
                                           headers={"Content-Type": "application/json"})
             result = await response.json()

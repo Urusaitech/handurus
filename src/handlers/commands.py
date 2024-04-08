@@ -24,24 +24,51 @@ async def cmd_start(message: Message, state: FSMContext):
 @router.message(F.text.lower() == "list subs")
 async def answer_subs(message: Message):
     async with aiohttp.ClientSession() as session:
-        print('sending request')
+        print("sending request")
         await message.answer(
                 "Loading..",
                 reply_markup=ReplyKeyboardRemove()
             )
-        response = await session.get(url=f'{parser_host}/api/v1/channels/{message.from_user.id}',
+        response = await session.get(url=f"{parser_host}/api/v1/channels/{message.from_user.id}",
                                      headers={"Content-Type": "application/json"})
         result = await response.json()
         print(result)
-        if not result['subs']:
+        if not result["subs"]:
             await message.answer(
                 "No subscriptions yet",
                 reply_markup=ReplyKeyboardRemove()
             )
         else:
             data = "Your subscriptions:\n"
-            for i in result['subs']:
+            for i in result["subs"]:
                 data += f"{i.replace("https://t.me/s/", "@")}\n"
+            await message.answer(
+                data,
+                reply_markup=ReplyKeyboardRemove()
+            )
+
+
+@router.message(F.text.lower() == "list keywords")
+async def answer_keywords(message: Message):
+    async with aiohttp.ClientSession() as session:
+        print("sending kw request")
+        await message.answer(
+                "Loading..",
+                reply_markup=ReplyKeyboardRemove()
+            )
+        response = await session.get(url=f"{parser_host}/api/v1/keywords/{message.from_user.id}",
+                                     headers={"Content-Type": "application/json"})
+        result = await response.json()
+        print(result)
+        if not result["keywords"]:
+            await message.answer(
+                "No keywords added yet",
+                reply_markup=ReplyKeyboardRemove()
+            )
+        else:
+            data = "Your keywords:\n"
+            for num, word in enumerate(result["keywords"], start=1):
+                data += f"{num}. {word}\n"
             await message.answer(
                 data,
                 reply_markup=ReplyKeyboardRemove()
