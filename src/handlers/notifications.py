@@ -1,6 +1,7 @@
 import asyncio
 import aiohttp
 from aiogram import Router
+from aiohttp import client_exceptions
 
 from src.main import bot
 from src.settings.config import config
@@ -18,10 +19,13 @@ class Notifications:
         while True:
             async with aiohttp.ClientSession() as session:
                 print('collecting updates')
-                response = await session.get(url=f'{self.parser_host}/api/v1/updates',
-                                             headers={"Content-Type": "application/json"})
-                self.updates = await response.json()
-                print(f'updates: {self.updates}')
+                try:
+                    response = await session.get(url=f'{self.parser_host}/api/v1/updates',
+                                                 headers={"Content-Type": "application/json"})
+                    self.updates = await response.json()
+                    print(f'updates: {self.updates}')
+                except client_exceptions.ClientConnectorError as e:
+                    print(e)
             await asyncio.sleep(self.updates_timer)
 
     async def send_notification(self):
