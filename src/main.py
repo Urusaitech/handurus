@@ -9,8 +9,7 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from datetime import datetime
 
 from handlers import commands
-from src.handlers import subscription
-from src.handlers import notifications
+from src.handlers import subscription, notifications, guide, contacts
 from src.settings.config import config
 
 bot = Bot(token=config.bot_token.get_secret_value(), default=DefaultBotProperties(parse_mode=ParseMode.HTML))
@@ -38,7 +37,13 @@ async def start_updates():
 async def main():
     logging.basicConfig(level=logging.INFO)
     dp["started_at"] = datetime.now().strftime("%Y-%m-%d %H:%M")
-    dp.include_routers(commands.router, subscription.router, notifications.router)
+    dp.include_routers(
+        commands.router,
+        subscription.router,
+        notifications.router,
+        guide.router,
+        contacts.router,
+    )
     await bot.delete_webhook(drop_pending_updates=True)
     await start_updates()
     await scheduler()
