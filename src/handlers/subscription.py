@@ -5,6 +5,7 @@ from aiogram.types import Message, ReplyKeyboardRemove
 
 from src.controllers.keywords import Keywords
 from src.controllers.subscriptions import Subscriptions
+from src.settings.config import config
 
 router = Router()
 
@@ -25,11 +26,26 @@ async def add_subscription(message: Message, state: FSMContext):
     await state.set_state(Subscribe.receiving_url)
 
 
+@router.message(F.text.lower() == "notifications frequency")
+async def edit_keywords(message: Message, state: FSMContext):
+    rate = int(config.updates_rate.get_secret_value()) // 60
+    await message.answer(
+        f"Section in development, current feeds update rate: {rate} min",
+        reply_markup=ReplyKeyboardRemove()
+    )
+
+
 @router.message(F.text.lower() == "edit keywords")
 async def edit_keywords(message: Message, state: FSMContext):
     await message.answer(
-        "send keywords, example: word,word",
-        reply_markup=ReplyKeyboardRemove()
+        ("Send keywords, example: <b>blackout,climate change,promot</b>\n\n"
+         "✏️Tips for better accuracy:\n"
+         "- don't put spaces between keywords\n"
+         "- use words without endings if the ending changes frequently\n\n"
+         "Note that this action will override your current keywords.\n"
+         "/start to cancel"),
+        reply_markup=ReplyKeyboardRemove(),
+        parse_mode="html"
     )
     await state.set_state(Subscribe.receiving_keywords)
 
@@ -53,8 +69,11 @@ async def url_incorrect(message: Message):
 
 @router.message(Subscribe.receiving_keywords)
 async def url_incorrect(message: Message):
+    data = "Added keywords:\n"
+    for num, word in enumerate(message.text.split(','), start=1):
+        data += f"{num}. {word}\n"
     await message.answer(
-        text=f"Added keywords: {message.text}",
+        text=data,
         reply_markup=ReplyKeyboardRemove()
     )
     await Keywords().add_keywords_for_user(message=message)

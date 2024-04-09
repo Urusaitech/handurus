@@ -21,7 +21,7 @@ async def cmd_start(message: Message, state: FSMContext):
     )
 
 
-@router.message(F.text.lower() == "list subs")
+@router.message(F.text.lower() == "my subs")
 async def answer_subs(message: Message):
     async with aiohttp.ClientSession() as session:
         print("sending request")
@@ -44,11 +44,11 @@ async def answer_subs(message: Message):
                 data += f"{i.replace("https://t.me/s/", "@")}\n"
             await message.answer(
                 data,
-                reply_markup=ReplyKeyboardRemove()
+                reply_markup=ReplyKeyboardRemove(),
             )
 
 
-@router.message(F.text.lower() == "list keywords")
+@router.message(F.text.lower() == "my keywords")
 async def answer_keywords(message: Message):
     async with aiohttp.ClientSession() as session:
         print("sending kw request")
@@ -66,12 +66,18 @@ async def answer_keywords(message: Message):
                 reply_markup=ReplyKeyboardRemove()
             )
         else:
-            data = "Your keywords:\n"
+            data = ""
             for num, word in enumerate(result["keywords"], start=1):
-                data += f"{num}. {word}\n"
+                if num == 1:
+                    data += word
+                else:
+                    data += ',' + word
             await message.answer(
-                data,
+                "Your keywords:",
                 reply_markup=ReplyKeyboardRemove()
+            )
+            await message.answer(
+                data
             )
 
 
@@ -80,14 +86,6 @@ async def answer_settings(message: Message):
     await message.answer(
         "choose an option",
         reply_markup=get_settings_kb()
-    )
-
-
-@router.message(F.text.lower() == "faq")
-async def answer_faq(message: Message):
-    await message.answer(
-        "In development",
-        reply_markup=ReplyKeyboardRemove()
     )
 
 

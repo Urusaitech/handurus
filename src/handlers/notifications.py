@@ -12,7 +12,7 @@ router = Router()
 class Notifications:
     def __init__(self):
         self.parser_host = config.parser_host.get_secret_value()
-        self.updates_timer = 120  # sec
+        self.updates_rate = int(config.updates_rate.get_secret_value())
         self.updates = None
 
     async def collect_notification_task(self):
@@ -27,7 +27,7 @@ class Notifications:
                 except client_exceptions.ClientConnectorError as e:
                     print(e)
                 print('collected')
-            await asyncio.sleep(self.updates_timer)
+            await asyncio.sleep(self.updates_rate)
 
     async def send_notification(self):
         while True:
@@ -36,13 +36,15 @@ class Notifications:
             if self.updates:
                 print('updates: ', self.updates)
                 for user, news in self.updates.items():
+                    msg = r"<b>last news:</b>"
                     for text in news:
-                        await bot.send_message(user, text)
-                        await asyncio.sleep(1)
+                        msg += f"\n{text}"
+                    if len(msg) > 17:
+                        await bot.send_message(user, msg, parse_mode='html')
                 self.updates = None
             else:
                 print('updates not found')
-            await asyncio.sleep(self.updates_timer)
+            await asyncio.sleep(self.updates_rate)
 
 
 notif_inst = Notifications()
